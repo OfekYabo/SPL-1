@@ -9,6 +9,8 @@ using std::vector;
 class Customer {
     public:
         Customer(int id, const string &name, int locationDistance, int maxOrders);
+        //copy constructor
+        Customer(const Customer& other);
         const string &getName() const;
         int getId() const;
         int getCustomerDistance() const;
@@ -33,6 +35,8 @@ class Customer {
 class SoldierCustomer: public Customer {
     public:
         SoldierCustomer(int id, const string &name, int locationDistance, int maxOrders);
+        //copy constructor
+        SoldierCustomer(const SoldierCustomer& other);
         SoldierCustomer *clone() const override;
     
     private:
@@ -42,6 +46,8 @@ class SoldierCustomer: public Customer {
 class CivilianCustomer: public Customer {
     public:
         CivilianCustomer(int id, const string &name, int locationDistance, int maxOrders);
+        //copy constructor
+        CivilianCustomer(const CivilianCustomer& other);
         CivilianCustomer *clone() const override;
     
     private:
