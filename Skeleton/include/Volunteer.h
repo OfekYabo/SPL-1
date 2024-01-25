@@ -10,6 +10,7 @@ using std::vector;
 class Volunteer {
     public:
         Volunteer(int id, const string &name);
+        Volunteer(int id, const string &name, int completedOrderId, int activeOrderId);
         int getId() const;
         const string &getName() const;
         int getActiveOrderId() const;
