@@ -27,6 +27,7 @@ class Order {
         int getCollectorId() const;
         int getDriverId() const;
         OrderStatus getStatus() const;
+        //Should represent the status of an order
         const string toString() const;
 
     private:

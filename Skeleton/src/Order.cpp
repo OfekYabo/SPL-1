@@ -13,4 +13,4 @@ void Order::setDriverId(int driverId){driverId = driverId;}
 int Order::getCollectorId() const {return collectorId;}
 int Order::getDriverId() const {return driverId;}
 OrderStatus Order::getStatus() const {return status;}
-const string Order::toString() const {return "Order status";} // Should represent the status of an order
+const string Order::toString() const {return "Order status";} 
