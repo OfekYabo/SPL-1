@@ -3,8 +3,6 @@
 Customer::Customer(int id, const string &name, int locationDistance, int maxOrders) 
     : id(id), name(name), locationDistance(locationDistance), maxOrders(maxOrders) { }
 
-Customer::Customer(const Customer& other) 
-    : id(other.id), name(other.name), locationDistance(other.locationDistance), maxOrders(other.maxOrders) { }
 
 const string& Customer::getName() const {return name;}
 int Customer::getId() const {return id;}
@@ -25,8 +23,7 @@ int Customer::addOrder(int orderId) {
 CivilianCustomer::CivilianCustomer(int id, const string &name, int locationDistance, int maxOrders) 
     : Customer(id, name, locationDistance, maxOrders) { }
 
-CivilianCustomer::CivilianCustomer(const CivilianCustomer& other)
-    : Customer(other) { }
+
 
 CivilianCustomer* CivilianCustomer::clone() const {return new CivilianCustomer(*this);}
 
@@ -37,8 +34,7 @@ CivilianCustomer* CivilianCustomer::clone() const {return new CivilianCustomer(*
 SoldierCustomer::SoldierCustomer(int id, const string &name, int locationDistance, int maxOrders) 
     : Customer(id, name, locationDistance, maxOrders) { }
 
-SoldierCustomer::SoldierCustomer(const SoldierCustomer& other)
-    : Customer(other) { }
+
 
 SoldierCustomer* SoldierCustomer::clone() const {return new SoldierCustomer(*this);}
 
