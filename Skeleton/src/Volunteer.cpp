@@ -18,6 +18,7 @@ int Volunteer::getId() const
 {
     return id;
 }
+Volunteer::Volunteer(const Volunteer &other) : id(other.id), name(other.name), activeOrderId(other.activeOrderId), completedOrderId(other.completedOrderId) {}
 
 const string& Volunteer::getName() const 
 {
@@ -40,7 +41,8 @@ bool Volunteer::isBusy() const
 /////////////////////////////////////////////////////////////////////////////////
 
 
-CollectorVolunteer::CollectorVolunteer(int id, const string &name, const int coolDown) : Volunteer(id, name) , timeLeft(NO_ORDER){}
+CollectorVolunteer::CollectorVolunteer(int id, const string &name, const int coolDown) : Volunteer(id, name) ,coolDown(coolDown), timeLeft(NO_ORDER){}
+CollectorVolunteer::CollectorVolunteer(const CollectorVolunteer &other) : Volunteer(other), coolDown(other.coolDown), timeLeft(other.timeLeft) {} 
 CollectorVolunteer* CollectorVolunteer::clone() const 
 {
      return new CollectorVolunteer(*this);
@@ -102,24 +104,25 @@ string CollectorVolunteer::toString() const
 
 
 LimitedCollectorVolunteer::LimitedCollectorVolunteer(int id, const string &name, int coolDown ,int maxOrders) : CollectorVolunteer(id, name, coolDown), maxOrders(maxOrders), ordersLeft(maxOrders) {}
-LimitedCollectorVolunteer* LimitedCollectorVolunteer::clone() const override 
+LimitedCollectorVolunteer::LimitedCollectorVolunteer(const LimitedCollectorVolunteer &other) : CollectorVolunteer(other), maxOrders(other.maxOrders), ordersLeft(other.ordersLeft) {}
+LimitedCollectorVolunteer* LimitedCollectorVolunteer::clone() const 
 {
     return new LimitedCollectorVolunteer(*this);
 }
 
-bool LimitedCollectorVolunteer::hasOrdersLeft() const override 
+bool LimitedCollectorVolunteer::hasOrdersLeft() const 
 {
     return (ordersLeft > 0);
 }
 
-bool LimitedCollectorVolunteer::canTakeOrder(const Order &order) const override
+bool LimitedCollectorVolunteer::canTakeOrder(const Order &order) const 
 {
     return (order.getStatus() == OrderStatus::PENDING && !CollectorVolunteer::isBusy() && hasOrdersLeft());
 }
 
-void LimitedCollectorVolunteer::acceptOrder(const Order &order) override 
+void LimitedCollectorVolunteer::acceptOrder(const Order &order) 
 {
-    if(canTakeOrder()){
+    if(canTakeOrder(order)){
         ordersLeft--;
         activeOrderId = order.getId();
     }
@@ -133,7 +136,7 @@ int LimitedCollectorVolunteer::getNumOrdersLeft() const
 {
     return ordersLeft;
 }
-string LimitedCollectorVolunteer::toString() const override
+string LimitedCollectorVolunteer::toString() const 
 {
         return "Limited Collector Volunteer - ID: " + std::to_string(getId()) +
            ", Name: " + getName() + ", Active Order ID: " + std::to_string(getActiveOrderId()) +
@@ -146,7 +149,8 @@ string LimitedCollectorVolunteer::toString() const override
 ////////////////////////////////////////////////////////////////////////////////////
 
 DriverVolunteer::DriverVolunteer(int id, const string &name, int maxDistance, int distancePerStep) : Volunteer(id,name), maxDistance(maxDistance), distancePerStep(distancePerStep), distanceLeft(NO_ORDER) {}
-DriverVolunteer::DriverVolunteer *clone() const override
+DriverVolunteer::DriverVolunteer(const DriverVolunteer &other) : Volunteer(other), maxDistance(other.maxDistance), distancePerStep(other.distancePerStep), distanceLeft(other.distanceLeft) {}
+DriverVolunteer* DriverVolunteer::clone() const 
 {
     return new DriverVolunteer(*this);
 }
@@ -175,16 +179,16 @@ bool DriverVolunteer::decreaseDistanceLeft() //Decrease distanceLeft by distance
     }
     return (distanceLeft <= 0);
 } 
-bool DriverVolunteer::hasOrdersLeft() const override
+bool DriverVolunteer::hasOrdersLeft() const 
 {
     return true;
 }
-bool DriverVolunteer::canTakeOrder(const Order &order) const override 
+bool DriverVolunteer::canTakeOrder(const Order &order) const 
 {
-    return (order.getStatus() == OrderStatus::COLLECTING && !Volunteer::isBusy() && order.getDistance() <= maxDistance) // Signal if the volunteer is not busy and the order is within the maxDistance
+    return (order.getStatus() == OrderStatus::COLLECTING && !Volunteer::isBusy() && order.getDistance() <= maxDistance); // Signal if the volunteer is not busy and the order is within the maxDistance
 } 
 
-void DriverVolunteer::acceptOrder(const Order &order) override 
+void DriverVolunteer::acceptOrder(const Order &order)  
 {
     if(canTakeOrder(order)){
         distanceLeft = order.getDistance(); // Assign distanceLeft to order's distance
@@ -192,7 +196,7 @@ void DriverVolunteer::acceptOrder(const Order &order) override
     }
 } 
 
-void DriverVolunteer::step() override 
+void DriverVolunteer::step() 
 { 
     if(decreaseDistanceLeft()){
         completedOrderId = activeOrderId;
@@ -200,7 +204,7 @@ void DriverVolunteer::step() override
     }
 } 
 
-string DriverVolunteer::toString() const override {
+string DriverVolunteer::toString() const {
         return "Driver Volunteer - ID: " + std::to_string(getId())
      + ", Name: " + getName() 
      + ", Active Order ID: " + std::to_string(getActiveOrderId()) 
@@ -215,9 +219,10 @@ string DriverVolunteer::toString() const override {
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 LimitedDriverVolunteer::LimitedDriverVolunteer(int id, const string &name, int maxDistance, int distancePerStep,int maxOrders) : DriverVolunteer(id, name, maxDistance, distancePerStep) , maxOrders(maxOrders), ordersLeft(maxOrders) {}
-LimitedDriverVolunteer* LimitedDriverVolunteer::clone() const override 
+LimitedDriverVolunteer::LimitedDriverVolunteer(const LimitedDriverVolunteer &other) : DriverVolunteer(other), maxOrders(other.maxOrders), ordersLeft(other.ordersLeft) {}
+LimitedDriverVolunteer* LimitedDriverVolunteer::clone() const
 {
-    return new LimitedCollectorVolunteer(*this);
+    return new LimitedDriverVolunteer(*this);
 }
 
 int LimitedDriverVolunteer::getMaxOrders() const 
@@ -230,16 +235,16 @@ int LimitedDriverVolunteer::getNumOrdersLeft() const
     return ordersLeft;
 }
 
-bool LimitedDriverVolunteer::hasOrdersLeft() const override 
+bool LimitedDriverVolunteer::hasOrdersLeft() const
 {
     return (ordersLeft > 0);
 }
 
-bool LimitedDriverVolunteer::canTakeOrder(const Order &order) const override {
+bool LimitedDriverVolunteer::canTakeOrder(const Order &order) const {
     return (hasOrdersLeft() && order.getStatus() == OrderStatus::COLLECTING && !Volunteer::isBusy() && order.getDistance() <= DriverVolunteer::getMaxDistance());
 } // Signal if the volunteer is not busy, the order is within the maxDistance.
 
-void LimitedDriverVolunteer::acceptOrder(const Order &order) override {
+void LimitedDriverVolunteer::acceptOrder(const Order &order) {
     if(canTakeOrder(order))
     {
         ordersLeft--;
@@ -247,7 +252,7 @@ void LimitedDriverVolunteer::acceptOrder(const Order &order) override {
         setDistanceLeft(order.getDistance());
     }
 } // Assign distanceLeft to order's distance and decrease ordersLeft
-string LimitedDriverVolunteer::toString() const override 
+string LimitedDriverVolunteer::toString() const 
 {
 return "Limited Driver Volunteer - ID: " + std::to_string(getId())
      + ", Name: " + getName() 
