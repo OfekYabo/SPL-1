@@ -50,23 +50,11 @@ OrderStatus Order::getStatus() const
 {
     return status;
 }
-string Order::getStatusString() const {
-    switch (status) {
-        case OrderStatus::PENDING:
-            return "PENDING";
-        case OrderStatus::COLLECTING:
-            return "COLLECTING";
-        case OrderStatus::DELIVERING:
-            return "DELIVERING";
-        case OrderStatus::COMPLETED:
-            return "COMPLETED";
-    }
-}
 const string Order::toString() const
 {
     return "Order ID: " + std::to_string(getId())
         +  ", Customer ID: " + std::to_string(getCustomerId())
-        +  ", Status: " + getStatusString() 
+        +  ", Status: " + OrderStatusToString.at(getStatus()) 
         +  ", Collector ID: " + std::to_string(getCollectorId())
         +  ", Driver ID: " + std::to_string(getDriverId());
 } 

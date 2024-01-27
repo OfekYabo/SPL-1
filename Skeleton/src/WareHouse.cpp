@@ -5,19 +5,89 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "../include/Order.h"
-#include "../include/Customer.h"
-#include "../include/Action.h"
-#include "../include/Volunteer.h"
+
+
 
 void WareHouse::start() {
-    //TODO need to implement
+    isOpen = true;
+    std::string line;
+
+    while (isOpen && std::getline(std::cin, line)) {
+        std::istringstream iss(line);
+        std::string command;
+        iss >> command;
+
+        if (command == "step") {
+            int numOfSteps;
+            iss >> numOfSteps;
+            BaseAction* action = new SimulateStep(numOfSteps);
+            addAction(action);
+            action->act(*this);
+        } else if (command == "order") {
+            int customerId;
+            iss >> customerId;
+            BaseAction* action = new AddOrder(customerId);
+            addAction(action);
+            action->act(*this);
+        } else if (command == "customer") {
+            std::string customerName, customerType;
+            int distance, maxOrders;
+            iss >> customerName >> customerType >> distance >> maxOrders;
+            BaseAction* action = new AddCustomer(customerName, customerType, distance, maxOrders);
+            addAction(action);
+            action->act(*this);
+        } else if (command == "orderStatus") {
+            int orderId;
+            iss >> orderId;
+            BaseAction* action = new PrintOrderStatus(orderId);
+            addAction(action);
+            action->act(*this);
+        } else if (command == "customerStatus") {
+            int customerId;
+            iss >> customerId;
+            BaseAction* action = new PrintCustomerStatus(customerId);
+            addAction(action);
+            action->act(*this);
+        } else if (command == "volunteerStatus") {
+            int volunteerId;
+            iss >> volunteerId;
+            BaseAction* action = new PrintVolunteerStatus(volunteerId);
+            addAction(action);
+            action->act(*this);
+        } else if (command == "log") {
+            BaseAction* action = new PrintActionsLog();
+            addAction(action);
+            action->act(*this);
+        } else if (command == "close") {
+            BaseAction* action = new Close();
+            addAction(action);
+            action->act(*this);
+            isOpen = false; // Set isOpen to false when the "close" command is received
+        } else if (command == "backup") {
+            BaseAction* action = new BackupWareHouse();
+            addAction(action);
+            action->act(*this);
+        } else if (command == "restore") {
+            BaseAction* action = new RestoreWareHouse();
+            addAction(action);
+            action->act(*this);
+        } else {
+            // Handle unknown command
+        }
+    }
 }
 void WareHouse::step() {
     for (auto it = pendingOrders.begin(); it != pendingOrders.end();) {
         for (Volunteer* volunteer : volunteers) {
             if (volunteer->canTakeOrder(**it)) {
                 volunteer->acceptOrder(**it);
+                if ((**it).getStatus() == OrderStatus::PENDING) {
+                    (**it).setStatus(OrderStatus::COLLECTING);
+                    (**it).setCollectorId(volunteer->getId());
+                } else if ((**it).getStatus() == OrderStatus::COLLECTING) {
+                    (**it).setStatus(OrderStatus::DELIVERING);
+                    (**it).setDriverId(volunteer->getId());
+                }
                 inProcessOrders.push_back(*it);
                 pendingOrders.erase(it);
                 break;
