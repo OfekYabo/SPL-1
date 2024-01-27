@@ -16,14 +16,27 @@ class WareHouse {
     public:
         WareHouse(const string &configFilePath);
         void start();
+        void step();
         void addOrder(Order* order);
         void addAction(BaseAction* action);
+        void addVolunteer(Volunteer* volunteer);
+        void addCustomer(Customer* customer);
+        bool isVolunteerExist(int volunteerId) const;
         Customer &getCustomer(int customerId) const;
         Volunteer &getVolunteer(int volunteerId) const;
         Order &getOrder(int orderId) const;
         const vector<BaseAction*> &getActions() const;
+        int getOrderCounter() const;
+        int getVolunteerCounter() const;
+        int getCustomerCounter() const;
         void close();
         void open();
+        // Rule of Five:
+        ~WareHouse(); // Destructor
+        WareHouse(const WareHouse& other); // Copy Constructor
+        WareHouse& operator=(const WareHouse& other); // Copy Assignment Operator
+        WareHouse(WareHouse&& other) noexcept; // Move Constructor
+        WareHouse& operator=(WareHouse&& other) noexcept; // Move Assignment Operator
 
     private:
         bool isOpen;
@@ -36,4 +49,5 @@ class WareHouse {
         int customerCounter; //For assigning unique customer IDs
         int volunteerCounter; //For assigning unique volunteer IDs
         int orderCounter; //For assigning unique order IDs
+        bool deleteVolunteer(Volunteer* volunteerId);
 };

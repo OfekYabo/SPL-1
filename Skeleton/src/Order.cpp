@@ -50,9 +50,7 @@ OrderStatus Order::getStatus() const
 {
     return status;
 }
-
-string Order::getStatusString() const
-{
+string Order::getStatusString() const {
     switch (status) {
         case OrderStatus::PENDING:
             return "PENDING";
