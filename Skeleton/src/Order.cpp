@@ -8,6 +8,20 @@ Order::Order(int id, int customerId, int distance, int collectorId, int driverId
 int Order::getId() const {return id;}
 int Order::getCustomerId() const {return customerId;}
 void Order::setStatus(OrderStatus status) {status = status;}
+
+string Order::getStatusString() const {
+    switch (status) {
+        case OrderStatus::PENDING:
+            return "PENDING";
+        case OrderStatus::COLLECTING:
+            return "COLLECTING";
+        case OrderStatus::DELIVERING:
+            return "DELIVERING";
+        case OrderStatus::COMPLETED:
+            return "COMPLETED";
+    }
+}
+
 void Order::setCollectorId(int collectorId) {collectorId = collectorId;}
 void Order::setDriverId(int driverId){driverId = driverId;}
 int Order::getCollectorId() const {return collectorId;}
