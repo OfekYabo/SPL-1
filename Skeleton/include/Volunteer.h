@@ -10,8 +10,6 @@ using std::vector;
 class Volunteer {
     public:
         Volunteer(int id, const string &name);
-        Volunteer(int id, const string &name, int completedOrderId, int activeOrderId);
-        //Volunteer(const Volunteer &other);
         int getId() const;
         const string &getName() const;
         int getActiveOrderId() const;
@@ -42,10 +40,10 @@ class CollectorVolunteer: public Volunteer {
     public:
         CollectorVolunteer(int id, const string &name, int coolDown);
         CollectorVolunteer *clone() const override;
-        //CollectorVolunteer(const CollectorVolunteer &other); //copy constructor
         void step() override;
         int getCoolDown() const;
         int getTimeLeft() const;
+        void setTimeLeft(int timeLeft);
         bool decreaseCoolDown();//Decrease timeLeft by 1,return true if timeLeft=0,false otherwise
         bool hasOrdersLeft() const override;
         bool canTakeOrder(const Order &order) const override;
@@ -62,7 +60,6 @@ class LimitedCollectorVolunteer: public CollectorVolunteer {
     public:
         LimitedCollectorVolunteer(int id, const string &name, int coolDown ,int maxOrders);
         LimitedCollectorVolunteer *clone() const override;
-        //LimitedCollectorVolunteer(const LimitedCollectorVolunteer &other); //copy constructor
         bool hasOrdersLeft() const override;
         bool canTakeOrder(const Order &order) const override;
         void acceptOrder(const Order &order) override;
@@ -81,7 +78,6 @@ class DriverVolunteer: public Volunteer {
     public:
         DriverVolunteer(int id, const string &name, int maxDistance, int distancePerStep);
         DriverVolunteer *clone() const override;
-        //DriverVolunteer(const DriverVolunteer &other);
         int getDistanceLeft() const;
         int getMaxDistance() const;
         int getDistancePerStep() const;  
@@ -104,7 +100,6 @@ class LimitedDriverVolunteer: public DriverVolunteer {
     public:
         LimitedDriverVolunteer(int id, const string &name, int maxDistance, int distancePerStep,int maxOrders);
         LimitedDriverVolunteer *clone() const override;
-        //LimitedDriverVolunteer(const LimitedDriverVolunteer &other);
         int getMaxOrders() const;
         int getNumOrdersLeft() const;
         bool hasOrdersLeft() const override;
