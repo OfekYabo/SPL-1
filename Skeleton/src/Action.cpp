@@ -40,7 +40,7 @@ AddOrder* AddOrder::clone() const { return new AddOrder(*this);}
 string AddOrder::toString() const { return "order " + std::to_string(customerId) + getStatusString();}
 
 void AddOrder::act(WareHouse &wareHouse) {
-    if ( customerId >= wareHouse.getCustomerCounter() || customerId < 0 ){
+    if (!wareHouse.isCustomerExist(customerId)){
         error("Cannot place this order");
         std::cout << getErrorMsg() << std::endl;
     }else{
@@ -93,7 +93,7 @@ PrintOrderStatus* PrintOrderStatus::clone() const { return new PrintOrderStatus(
 string PrintOrderStatus::toString() const { return "orderStatus " + std::to_string(orderId) + getStatusString();}
 
 void PrintOrderStatus::act(WareHouse &wareHouse) {
-    if (orderId < 0 || orderId > wareHouse.getOrderCounter()) {
+    if (!wareHouse.isOrderExist(orderId)){
         error("Order doesn't exist");
         std::cout << getErrorMsg() << std::endl;
     } 
@@ -111,7 +111,7 @@ PrintCustomerStatus* PrintCustomerStatus::clone() const { return new PrintCustom
 string PrintCustomerStatus::toString() const { return "customerStatus " + std::to_string(customerId) + getStatusString();}
 
 void PrintCustomerStatus::act(WareHouse &wareHouse) {
-    if (customerId < 0 || customerId > wareHouse.getCustomerCounter()) {
+    if (!wareHouse.isCustomerExist(customerId)){
         error("Customer doesn't exist");
         std::cout << getErrorMsg() << std::endl;
     } 
@@ -120,7 +120,7 @@ void PrintCustomerStatus::act(WareHouse &wareHouse) {
         std::cout << "CustomerID: " + std::to_string(customerId) << std::endl;
         for (int orderId : customer.getOrdersIds()) {
             std::cout << "OrderID: " + std::to_string(orderId) << std::endl;
-            std::cout << "OrderStatus: " + OrderStatusToString.at(wareHouse.getOrder(orderId).getStatus()) << std::endl;
+            std::cout << "OrderStatus: " + OrderStatusToString.at(wareHouse.getOrder(orderId).getStatus()) << std::endl;//no need tho check existance of order because we know it exists
         }
         std::cout << "numOrdersLeft: " + std::to_string(customer.getMaxOrders()-customer.getNumOrders()) << std::endl;
         complete();
@@ -138,12 +138,13 @@ PrintVolunteerStatus* PrintVolunteerStatus::clone() const { return new PrintVolu
 string PrintVolunteerStatus::toString() const { return "volunteerStatus " + std::to_string(volunteerId) + getStatusString();}
 
 void PrintVolunteerStatus::act(WareHouse &wareHouse) {
-    if ( !wareHouse.isVolunteerExist(volunteerId) ){
+    int VolunteerIndex = wareHouse.isVolunteerExist(volunteerId);
+    if ( VolunteerIndex == -1 ){
         error("Volunteer doesn't exist");
         std::cout << getErrorMsg() << std::endl;
     }
     else{
-        Volunteer& volunteer = wareHouse.getVolunteer(volunteerId);
+        Volunteer& volunteer = wareHouse.getVolunteer(VolunteerIndex);
         std::cout << volunteer.toString() << std::endl;
         complete();
     }
