@@ -237,6 +237,7 @@ string DriverVolunteer::toString() const {
      + ", isBusy:" + std::to_string(Volunteer::isBusy()) 
      + ", OrderID: " + str1
      + ", DistanceLeft: " + str2;
+     + ", OrdersLeft: NO Limit";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -288,4 +289,5 @@ string LimitedDriverVolunteer::toString() const
      + ", isBusy:" + std::to_string(Volunteer::isBusy()) 
      + ", OrderID: " + str1
      + ", DistanceLeft: " + str2;
+     + ", OrdersLeft: " + std::to_string(ordersLeft);
 }
