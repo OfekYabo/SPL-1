@@ -13,6 +13,9 @@ Volunteer::Volunteer(int id, const string &name) : id(id), name(name)
     activeOrderId = -1;
 }
 
+Volunteer::Volunteer(int id, const string &name, int completedOrderId, int activeOrderId) 
+    : id(id), name(name), completedOrderId(completedOrderId), activeOrderId(activeOrderId) {}
+
 int Volunteer::getId() const
 {
     return id;
