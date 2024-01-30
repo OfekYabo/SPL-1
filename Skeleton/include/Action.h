@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "WareHouse.h"
 using std::string;
 using std::vector;
+#include <unordered_map>
 
 enum class ActionStatus{
     COMPLETED, ERROR
@@ -11,6 +11,12 @@ enum class ActionStatus{
 
 enum class CustomerType{
     Soldier, Civilian
+};
+
+
+const std::unordered_map<std::string, CustomerType> StringToCustomerType = {
+    {"Soldier", CustomerType::Soldier},
+    {"Civilian", CustomerType::Civilian}
 };
 
 

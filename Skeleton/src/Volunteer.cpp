@@ -28,6 +28,11 @@ int Volunteer::getActiveOrderId() const
     return activeOrderId;
 }
 
+int Volunteer::getCompletedOrderId() const 
+{
+    return completedOrderId;
+}
+
 bool Volunteer::isBusy() const
 {
     return (activeOrderId != NO_ORDER);

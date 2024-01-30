@@ -4,12 +4,19 @@
 #include <vector>
 using std::string;
 using std::vector;
-
+#include <unordered_map>
 enum class OrderStatus {
     PENDING,
     COLLECTING,
     DELIVERING,
     COMPLETED,
+};
+
+const std::unordered_map<OrderStatus, std::string> OrderStatusToString = {
+    { OrderStatus::PENDING, "PENDING"},
+    { OrderStatus::COLLECTING, "COLLECTING"},
+    { OrderStatus::DELIVERING, "DELIVERING"},
+    { OrderStatus::COMPLETED, "COMPLETED"},
 };
 
 #define NO_VOLUNTEER -1
@@ -27,9 +34,8 @@ class Order {
         int getCollectorId() const;
         int getDriverId() const;
         int getDistance() const;
-        OrderStatus getStatus() const;
-        string getStatusString() const;
         //Should represent the status of an order
+        OrderStatus getStatus() const;
         const string toString() const;
 
     private:
