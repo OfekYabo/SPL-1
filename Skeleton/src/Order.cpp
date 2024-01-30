@@ -20,17 +20,17 @@ int Order::getCustomerId() const
 
 void Order::setStatus(OrderStatus status) 
 {
-    status = status;
+    this->status = status;
 }
 
 void Order::setCollectorId(int collectorId)
 {
-    collectorId = collectorId;
+    this->collectorId = collectorId;
 }
 
 void Order::setDriverId(int driverId)
 {
-    driverId = driverId;
+    this->driverId = driverId;
 }
 
 int Order::getCollectorId() const 
@@ -52,9 +52,9 @@ OrderStatus Order::getStatus() const
 }
 const string Order::toString() const
 {
-    return "Order ID: " + std::to_string(getId())
-        +  ", Customer ID: " + std::to_string(getCustomerId())
-        +  ", Status: " + OrderStatusToString.at(getStatus()) 
-        +  ", Collector ID: " + std::to_string(getCollectorId())
-        +  ", Driver ID: " + std::to_string(getDriverId());
+    return  "OrderID: " + std::to_string(id)
+        +  ", OrderStatus: " + getStatusString() 
+        +  ", CustomerID: " + std::to_string(customerId)
+        +  ", Collector: " + std::to_string(collectorId)
+        +  ", Driver: " + std::to_string(driverId);
 } 

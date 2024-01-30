@@ -1,6 +1,6 @@
 
 #include "../include/Volunteer.h"
-#include "../include/Order.h"
+
 
 
 /////////////////////////////////////////////////////////
@@ -12,8 +12,6 @@ Volunteer::Volunteer(int id, const string &name) : id(id), name(name)
     completedOrderId = -1;
     activeOrderId = -1;
 }
-
-Volunteer::Volunteer(int id, const string &name, int completedOrderId, int activeOrderId) : id(id), name(name), completedOrderId(completedOrderId), activeOrderId(activeOrderId) {}
 
 int Volunteer::getId() const
 {
@@ -46,7 +44,7 @@ bool Volunteer::isBusy() const
 /////////////////////////////////////////////////////////////////////////////////
 
 
-CollectorVolunteer::CollectorVolunteer(int id, const string &name, const int coolDown) : Volunteer(id, name) ,coolDown(coolDown), timeLeft(NO_ORDER){}
+CollectorVolunteer::CollectorVolunteer(int id, const string &name, const int coolDown) : Volunteer(id, name) ,coolDown(coolDown), timeLeft(0){}
 CollectorVolunteer* CollectorVolunteer::clone() const 
 {
      return new CollectorVolunteer(*this);
@@ -68,7 +66,10 @@ int CollectorVolunteer::getTimeLeft() const
 {
     return timeLeft;
 }
-
+void CollectorVolunteer::setTimeLeft(int timeLeft)
+{
+    this->timeLeft = timeLeft;
+}
 bool CollectorVolunteer::decreaseCoolDown() //Decrease timeLeft by 1,return true if timeLeft=0,false otherwise
 {
     if(timeLeft > 0){
@@ -96,10 +97,17 @@ void CollectorVolunteer::acceptOrder(const Order &order)
 }
 string CollectorVolunteer::toString() const 
 {
-    return "Collector Volunteer - ID: " + std::to_string(getId())
-     + ", Name: " + getName() 
-     + ", Active Order ID: " + std::to_string(getActiveOrderId()) 
-     + ", Completed Order ID: " + std::to_string(getCompletedOrderId());
+    string str1 = "None";
+    string str2 = "None";
+    if(activeOrderId != -1)
+        str1 = std::to_string(activeOrderId);
+    if(timeLeft != 0)
+        str2 = std::to_string(timeLeft);
+    return "VolunteerID: " + std::to_string(getId())
+     + ", isBusy:" + std::to_string(Volunteer::isBusy()) 
+     + ", OrderID: " + str1
+     + ", TimeLeft: " + str2 
+     + ", OrdersLeft: No Limit";
 }
 
 
@@ -129,6 +137,7 @@ void LimitedCollectorVolunteer::acceptOrder(const Order &order)
     if(canTakeOrder(order)){
         ordersLeft--;
         activeOrderId = order.getId();
+        setTimeLeft(this->getCoolDown());   
     }
 }
 
@@ -142,17 +151,24 @@ int LimitedCollectorVolunteer::getNumOrdersLeft() const
 }
 string LimitedCollectorVolunteer::toString() const 
 {
-        return "Limited Collector Volunteer - ID: " + std::to_string(getId()) +
-           ", Name: " + getName() + ", Active Order ID: " + std::to_string(getActiveOrderId()) +
-           ", Completed Order ID: " + std::to_string(getCompletedOrderId()) +
-           ", Orders Left: " + std::to_string(getNumOrdersLeft());
+    string str1 = "None";
+    string str2 = "None";
+    if(activeOrderId != -1)
+        str1 = std::to_string(activeOrderId);
+    if(getTimeLeft() != 0)
+        str2 = std::to_string(getTimeLeft());
+    return "VolunteerID: " + std::to_string(getId())
+     + ", isBusy:" + std::to_string(Volunteer::isBusy()) 
+     + ", OrderID: " + str1
+     + ", TimeLeft: " + str2 
+     + ", OrdersLeft: " + std::to_string(ordersLeft);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////// Driver Collector ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-DriverVolunteer::DriverVolunteer(int id, const string &name, int maxDistance, int distancePerStep) : Volunteer(id,name), maxDistance(maxDistance), distancePerStep(distancePerStep), distanceLeft(NO_ORDER) {}
+DriverVolunteer::DriverVolunteer(int id, const string &name, int maxDistance, int distancePerStep) : Volunteer(id,name), maxDistance(maxDistance), distancePerStep(distancePerStep), distanceLeft(0) {}
 DriverVolunteer* DriverVolunteer::clone() const 
 {
     return new DriverVolunteer(*this);
@@ -208,13 +224,16 @@ void DriverVolunteer::step()
 } 
 
 string DriverVolunteer::toString() const {
-        return "Driver Volunteer - ID: " + std::to_string(getId())
-     + ", Name: " + getName() 
-     + ", Active Order ID: " + std::to_string(getActiveOrderId()) 
-     + ", Completed Order ID: " + std::to_string(getCompletedOrderId())
-     + ", Maximum Distance: " + std::to_string(getMaxDistance())
-     + ", Distance Left: " + std::to_string(getDistanceLeft())
-     + ", Distance per Step: " + std::to_string(getDistancePerStep());
+    string str1 = "None";
+    string str2 = "None";
+    if(activeOrderId != -1)
+        str1 = std::to_string(activeOrderId);
+    if(distanceLeft != 0)
+        str2 = std::to_string(distanceLeft);
+    return "VolunteerID: " + std::to_string(getId())
+     + ", isBusy:" + std::to_string(Volunteer::isBusy()) 
+     + ", OrderID: " + str1
+     + ", DistanceLeft: " + str2;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -256,13 +275,14 @@ void LimitedDriverVolunteer::acceptOrder(const Order &order) {
 } // Assign distanceLeft to order's distance and decrease ordersLeft.
 string LimitedDriverVolunteer::toString() const 
 {
-return "Limited Driver Volunteer - ID: " + std::to_string(getId())
-     + ", Name: " + getName() 
-     + ", Active Order ID: " + std::to_string(getActiveOrderId()) 
-     + ", Completed Order ID: " + std::to_string(getCompletedOrderId())
-     + ", Maximum Distance: " + std::to_string(getMaxDistance())
-     + ", Distance Left: " + std::to_string(getDistanceLeft())
-     + ", Distance per Step: " + std::to_string(getDistancePerStep())
-     + ", Orders Left: " + std::to_string(getNumOrdersLeft())
-     + ", Maximum Orders: " + std::to_string(getMaxOrders());
+    string str1 = "None";
+    string str2 = "None";
+    if(activeOrderId != -1)
+        str1 = std::to_string(activeOrderId);
+    if(getDistanceLeft() != 0)
+        str2 = std::to_string(getDistanceLeft());
+    return "VolunteerID: " + std::to_string(getId())
+     + ", isBusy:" + std::to_string(Volunteer::isBusy()) 
+     + ", OrderID: " + str1
+     + ", DistanceLeft: " + str2;
 }
