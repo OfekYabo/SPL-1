@@ -4,6 +4,8 @@
 
 #include "Order.h"
 #include "Customer.h"
+#include "../include/Volunteer.h"
+#include "../include/Action.h"
 
 class BaseAction;
 class Volunteer;
@@ -21,10 +23,12 @@ class WareHouse {
         void addAction(BaseAction* action);
         void addVolunteer(Volunteer* volunteer);
         void addCustomer(Customer* customer);
-        bool isVolunteerExist(int volunteerId) const;
         Customer &getCustomer(int customerId) const;
         Volunteer &getVolunteer(int volunteerId) const;
         Order &getOrder(int orderId) const;
+        bool isOrderExist(int orderId) const;
+        bool isCustomerExist(int customerId) const;
+        int isVolunteerExist(int volunteerId) const;
         const vector<BaseAction*> &getActions() const;
         int getOrderCounter() const;
         int getVolunteerCounter() const;

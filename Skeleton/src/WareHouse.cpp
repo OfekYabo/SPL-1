@@ -5,19 +5,72 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "../include/Order.h"
-#include "../include/Customer.h"
-#include "../include/Action.h"
-#include "../include/Volunteer.h"
+
+
 
 void WareHouse::start() {
-    //TODO need to implement
+    isOpen = true;
+    std::string line;
+
+    while (isOpen && std::getline(std::cin, line)) {
+        std::istringstream iss(line);
+        std::string command;
+        iss >> command;
+        BaseAction* action;
+        if (command == "step") {
+            int numOfSteps;
+            iss >> numOfSteps;
+            action = new SimulateStep(numOfSteps);
+        } else if (command == "order") {
+            int customerId;
+            iss >> customerId;
+            action = new AddOrder(customerId);
+        } else if (command == "customer") {
+            std::string customerName, customerType;
+            int distance, maxOrders;
+            iss >> customerName >> customerType >> distance >> maxOrders;
+            action = new AddCustomer(customerName, customerType, distance, maxOrders);
+        } else if (command == "orderStatus") {
+            int orderId;
+            iss >> orderId;
+            action = new PrintOrderStatus(orderId);
+        } else if (command == "customerStatus") {
+            int customerId;
+            iss >> customerId;
+            action = new PrintCustomerStatus(customerId);
+        } else if (command == "volunteerStatus") {
+            int volunteerId;
+            iss >> volunteerId;
+            action = new PrintVolunteerStatus(volunteerId);
+        } else if (command == "log") {
+            action = new PrintActionsLog();
+        } else if (command == "close") {
+            action = new Close();
+            isOpen = false; // Set isOpen to false when the "close" command is received
+        } else if (command == "backup") {
+            action = new BackupWareHouse();
+        } else if (command == "restore") {
+            action = new RestoreWareHouse();
+        } else {
+            std::cout << "Illegal Input- Try Again"<< std::endl;
+            continue;//start the loop again
+        }
+        addAction(action);
+        action->act(*this);
+    }
 }
 void WareHouse::step() {
     for (auto it = pendingOrders.begin(); it != pendingOrders.end();) {
         for (Volunteer* volunteer : volunteers) {
             if (volunteer->canTakeOrder(**it)) {
                 volunteer->acceptOrder(**it);
+                if ((**it).getStatus() == OrderStatus::PENDING) {
+                    (**it).setStatus(OrderStatus::COLLECTING);
+                    (**it).setCollectorId(volunteer->getId());
+                } else if ((**it).getStatus() == OrderStatus::COLLECTING) {
+                    (**it).setStatus(OrderStatus::DELIVERING);
+                    (**it).setDriverId(volunteer->getId());
+                }
                 inProcessOrders.push_back(*it);
                 pendingOrders.erase(it);
                 break;
@@ -27,8 +80,8 @@ void WareHouse::step() {
     for (Volunteer* volunteer : volunteers){
         if (volunteer->isBusy()){
             volunteer->step();
-            if (volunteer->getActiveOrderId() == volunteer->getCompletedOrderId()){
-                Order& order = getOrder(volunteer->getActiveOrderId());
+            if (volunteer->getActiveOrderId() -1){
+                Order& order = getOrder(volunteer->getCompletedOrderId());//orders not delete so no need to check exist
                 std::vector<Order*>::iterator it;
                 switch(order.getStatus()){
                     case OrderStatus::COLLECTING:
@@ -55,16 +108,6 @@ void WareHouse::step() {
     }
 }
 
-bool WareHouse::deleteVolunteer(Volunteer* volunteerId) {
-    for (auto it = volunteers.begin(); it != volunteers.end(); ++it) {
-        if (*it == volunteerId) {
-            delete *it;
-            volunteers.erase(it);
-            return true;
-        }
-    }
-    return false;
-}
 
 WareHouse::WareHouse(const string& configFilePath) : isOpen(true), customerCounter(0), volunteerCounter(0), orderCounter(0) {
     std::ifstream file(configFilePath);
@@ -146,8 +189,48 @@ void WareHouse::addAction(BaseAction* action) {
     actionsLog.push_back(action);
 }
 
+
+bool WareHouse::deleteVolunteer(Volunteer* volunteerId) {
+    for (auto it = volunteers.begin(); it != volunteers.end(); ++it) {
+        if (*it == volunteerId) {
+            delete *it;
+            volunteers.erase(it);
+            return true;
+        }
+    }
+    return false;
+}
+
+//use before using getVolunteer
+//-1 if not exist, else return index
+int WareHouse::isVolunteerExist(int volunteerId) const {
+    if(volunteerCounter<=volunteerId || volunteerId<0) {return -1;}
+    for (int i = 0; i < volunteers.size(); i++) {
+        if (volunteers[i]->getId() == volunteerId) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+//use before using getCustomer
+bool WareHouse::isOrderExist(int orderId) const{
+    if(orderCounter<=orderId || orderId<0){
+        return false;
+    }
+    return true;
+}
+
+//use before using getCustomer
+bool WareHouse::isCustomerExist(int customerId) const{
+    if(customerCounter<=customerId || customerId<0) {
+        return false;
+    }
+    return true;
+}
+
+//use isCustomerExist before using this function
 Customer& WareHouse::getCustomer(int customerId) const {
-    if(customerCounter<=customerId || customerId<0) {throw std::exception();}
     for (Customer* customer : customers) {
         if (customer->getId() == customerId) {
             return *customer;
@@ -155,26 +238,14 @@ Customer& WareHouse::getCustomer(int customerId) const {
     }
 }
 
-bool WareHouse::isVolunteerExist(int volunteerId) const {
-    if(volunteerCounter<=volunteerId || volunteerId<0) {return false;}
-    for (Volunteer* volunteer : volunteers) {
-        if (volunteer->getId() == volunteerId) {
-            return true;
-        }
-    }
-    return false;
-}
-
+//volunteer index, not ID (use isVolunteerExist to get index)
+//indexes are from 0 or greater
 Volunteer& WareHouse::getVolunteer(int volunteerId) const {
-    for (Volunteer* volunteer : volunteers) {
-        if (volunteer->getId()==volunteerId) {
-            return *volunteer;
-        }
-    }
+    return *volunteers[volunteerId];
 }
 
+//use isOrderExist before using this function
 Order& WareHouse::getOrder(int orderId) const {
-    if(orderCounter<=orderId || orderId<0) {throw std::exception();}
     for (Order* order : pendingOrders) {
         if (order->getId()==orderId) {
             return *order;
@@ -192,7 +263,7 @@ Order& WareHouse::getOrder(int orderId) const {
     }
 }
 
-const vector<BaseAction*>& WareHouse::getActions() const {return actionsLog;}
+const vector<BaseAction *>& WareHouse::getActions() const { return actionsLog; }
 
 int WareHouse::getOrderCounter() const {return orderCounter;}
 
