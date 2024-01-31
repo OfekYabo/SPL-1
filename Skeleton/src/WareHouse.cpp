@@ -5,7 +5,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-
+#include <algorithm>
 
 
 void WareHouse::start() {
