@@ -1,12 +1,10 @@
 
 
-all: make
+all: clean warehouse
 
-make: bin/Action.o bin/Customer.o bin/Order.o bin/Volunteer.o bin/WareHouse.o bin/main.o
-	g++  -o bin/make bin/Action.o bin/Customer.o bin/Order.o bin/Volunteer.o bin/WareHouse.o bin/main.o
-
-bin/Action.o: src/Action.cpp
-	g++ -g -Wall -Weffc++ -std=c++11 -c -Iinclude -o bin/Action.o src/Action.cpp
+warehouse:  bin/Customer.o bin/Order.o bin/Volunteer.o bin/Action.o bin/WareHouse.o bin/main.o
+	g++  -o bin/wa
+	rehouse  bin/Customer.o bin/Order.o bin/Volunteer.o bin/Action.o bin/WareHouse.o bin/main.o
 
 bin/Customer.o: src/Customer.cpp
 	g++ -g -Wall -Weffc++ -std=c++11 -c -Iinclude -o bin/Customer.o src/Customer.cpp
@@ -16,6 +14,9 @@ bin/Order.o: src/Order.cpp
 
 bin/Volunteer.o: src/Volunteer.cpp
 	g++ -g -Wall -Weffc++ -std=c++11 -c -Iinclude -o bin/Volunteer.o src/Volunteer.cpp
+
+bin/Action.o: src/Action.cpp
+	g++ -g -Wall -Weffc++ -std=c++11 -c -Iinclude -o bin/Action.o src/Action.cpp
 
 bin/WareHouse.o: src/WareHouse.cpp
 	g++ -g -Wall -Weffc++ -std=c++11 -c -Iinclude -o bin/WareHouse.o src/WareHouse.cpp
