@@ -4,7 +4,7 @@
 #include <iostream>
 
 // BaseAction class
-BaseAction::BaseAction() {}
+BaseAction::BaseAction() : errorMsg(""), status(ActionStatus::ERROR)  {}
 
 ActionStatus BaseAction::getStatus() const { return status;}
 string BaseAction::getStatusString() const {return status == ActionStatus::COMPLETED ? " COMPLETED" : " ERROR";}

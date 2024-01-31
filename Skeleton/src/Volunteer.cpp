@@ -7,14 +7,8 @@
 //////////////////////// Volunteer //////////////////////
 /////////////////////////////////////////////////////////
 
-Volunteer::Volunteer(int id, const string &name) : id(id), name(name) 
-{
-    completedOrderId = -1;
-    activeOrderId = -1;
-}
-
-Volunteer::Volunteer(int id, const string &name, int completedOrderId, int activeOrderId) 
-    : id(id), name(name), completedOrderId(completedOrderId), activeOrderId(activeOrderId) {}
+Volunteer::Volunteer(int id, const string &name) 
+: completedOrderId(NO_ORDER), activeOrderId(NO_ORDER), id(id), name(name) {}
 
 int Volunteer::getId() const
 {

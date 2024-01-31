@@ -1,7 +1,7 @@
 #include "../include/Customer.h"
 
 Customer::Customer(int id, const string &name, int locationDistance, int maxOrders) 
-    : id(id), name(name), locationDistance(locationDistance), maxOrders(maxOrders) { }
+    : id(id), name(name), locationDistance(locationDistance), maxOrders(maxOrders), ordersId() { }
 
 
 const string& Customer::getName() const {return name;}
@@ -12,9 +12,11 @@ int Customer::getNumOrders() const {return ordersId.size();} //Returns num of or
 bool Customer::canMakeOrder() const {return (getNumOrders() < maxOrders);} //Returns true if the customer didn't reach max orders
 const vector<int>& Customer::getOrdersIds() const {return ordersId;}
 int Customer::addOrder(int orderId) { 
-    if(canMakeOrder()) {ordersId.push_back(orderId);}
-    else return -1;
-    }
+    if(canMakeOrder()) {
+        ordersId.push_back(orderId);
+        return orderId;
+    } else return -1;
+}
 
 
 

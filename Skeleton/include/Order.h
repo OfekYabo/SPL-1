@@ -25,7 +25,6 @@ class Order {
 
     public:
         Order(int id, int customerId, int distance);
-        Order(int id, int customerId, int distance, int collectorId, int driverId);
         int getId() const;
         int getCustomerId() const;
         void setStatus(OrderStatus status);
