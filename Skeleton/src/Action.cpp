@@ -1,6 +1,5 @@
 
 #include "../include/Action.h"
-#include "../include/WareHouse.h"
 #include <iostream>
 
 // BaseAction class
