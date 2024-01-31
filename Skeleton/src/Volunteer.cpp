@@ -106,10 +106,10 @@ string CollectorVolunteer::toString() const
         str1 = std::to_string(activeOrderId);
     if(timeLeft != 0)
         str2 = std::to_string(timeLeft);
-    return "VolunteerID: " + std::to_string(getId())
-     + ", isBusy:" + std::to_string(Volunteer::isBusy()) 
-     + ", OrderID: " + str1
-     + ", TimeLeft: " + str2 
+    return "VolunteerID: " + std::to_string(getId()) + "\n"
+     + ", isBusy:" + std::to_string(Volunteer::isBusy()) + "\n"
+     + ", OrderID: " + str1 + "\n"
+     + ", TimeLeft: " + str2 + "\n" 
      + ", OrdersLeft: No Limit";
 }
 
@@ -160,10 +160,10 @@ string LimitedCollectorVolunteer::toString() const
         str1 = std::to_string(activeOrderId);
     if(getTimeLeft() != 0)
         str2 = std::to_string(getTimeLeft());
-    return "VolunteerID: " + std::to_string(getId())
-     + ", isBusy:" + std::to_string(Volunteer::isBusy()) 
-     + ", OrderID: " + str1
-     + ", TimeLeft: " + str2 
+    return "VolunteerID: " + std::to_string(getId()) + "\n"
+     + ", isBusy:" + std::to_string(Volunteer::isBusy()) + "\n" 
+     + ", OrderID: " + str1 + "\n"
+     + ", TimeLeft: " + str2 + "\n"
      + ", OrdersLeft: " + std::to_string(ordersLeft);
 }
 
@@ -233,9 +233,9 @@ string DriverVolunteer::toString() const {
         str1 = std::to_string(activeOrderId);
     if(distanceLeft != 0)
         str2 = std::to_string(distanceLeft);
-    return "VolunteerID: " + std::to_string(getId())
-     + ", isBusy:" + std::to_string(Volunteer::isBusy()) 
-     + ", OrderID: " + str1
+    return "VolunteerID: " + std::to_string(getId()) + "\n"
+     + ", isBusy:" + std::to_string(Volunteer::isBusy()) + "\n"
+     + ", OrderID: " + str1 + "\n"
      + ", DistanceLeft: " + str2;
 }
 
@@ -284,8 +284,8 @@ string LimitedDriverVolunteer::toString() const
         str1 = std::to_string(activeOrderId);
     if(getDistanceLeft() != 0)
         str2 = std::to_string(getDistanceLeft());
-    return "VolunteerID: " + std::to_string(getId())
-     + ", isBusy:" + std::to_string(Volunteer::isBusy()) 
-     + ", OrderID: " + str1
+    return "VolunteerID: " + std::to_string(getId()) + "\n"
+     + ", isBusy:" + std::to_string(Volunteer::isBusy()) + "\n"
+     + ", OrderID: " + str1 + "\n"
      + ", DistanceLeft: " + str2;
 }

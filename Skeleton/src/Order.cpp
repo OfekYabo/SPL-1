@@ -52,9 +52,9 @@ OrderStatus Order::getStatus() const
 }
 const string Order::toString() const
 {
-    return  "OrderID: " + std::to_string(id)
-        +  ", OrderStatus: " + getStatusString() 
-        +  ", CustomerID: " + std::to_string(customerId)
-        +  ", Collector: " + std::to_string(collectorId)
+    return  "OrderID: " + std::to_string(id) + "\n"
+        +  ", OrderStatus: " + OrderStatusToString.at(status) + "\n"
+        +  ", CustomerID: " + std::to_string(customerId) + "\n"
+        +  ", Collector: " + std::to_string(collectorId) + "\n"
         +  ", Driver: " + std::to_string(driverId);
 } 
