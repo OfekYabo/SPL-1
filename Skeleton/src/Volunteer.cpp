@@ -94,17 +94,14 @@ void CollectorVolunteer::acceptOrder(const Order &order)
 }
 string CollectorVolunteer::toString() const 
 {
-    string str1 = "None";
-    string str2 = "None";
-    if(activeOrderId != -1)
-        str1 = std::to_string(activeOrderId);
-    if(timeLeft != 0)
-        str2 = std::to_string(timeLeft);
+    string sActiveOrderId = (activeOrderId == -1) ? "None" : std::to_string(activeOrderId);
+    string sTimeLeft = (getTimeLeft() <= 0) ? "None" : std::to_string(getTimeLeft());
+    string sIsbusy = (Volunteer::isBusy()) ? "True" : "False";
     return "VolunteerID: " + std::to_string(getId()) + "\n"
-     + ", isBusy:" + std::to_string(Volunteer::isBusy()) + "\n"
-     + ", OrderID: " + str1 + "\n"
-     + ", TimeLeft: " + str2 + "\n" 
-     + ", OrdersLeft: No Limit";
+         + "isBusy:" + sIsbusy + "\n"
+         + "OrderID: " + sActiveOrderId + "\n"
+         + "TimeLeft: " + sTimeLeft + "\n" 
+         + "OrdersLeft: No Limit";
 }
 
 
@@ -148,17 +145,14 @@ int LimitedCollectorVolunteer::getNumOrdersLeft() const
 }
 string LimitedCollectorVolunteer::toString() const 
 {
-    string str1 = "None";
-    string str2 = "None";
-    if(activeOrderId != -1)
-        str1 = std::to_string(activeOrderId);
-    if(getTimeLeft() != 0)
-        str2 = std::to_string(getTimeLeft());
+    string sActiveOrderId = (activeOrderId == -1) ? "None" : std::to_string(activeOrderId);
+    string sTimeLeft = (getTimeLeft() <= 0) ? "None" : std::to_string(getTimeLeft());
+    string sIsbusy = (Volunteer::isBusy()) ? "True" : "False";
     return "VolunteerID: " + std::to_string(getId()) + "\n"
-     + ", isBusy:" + std::to_string(Volunteer::isBusy()) + "\n" 
-     + ", OrderID: " + str1 + "\n"
-     + ", TimeLeft: " + str2 + "\n"
-     + ", OrdersLeft: " + std::to_string(ordersLeft);
+         + "isBusy:" + sIsbusy + "\n" 
+         + "OrderID: " + sActiveOrderId + "\n"
+         + "TimeLeft: " + sTimeLeft + "\n"
+         + "OrdersLeft: " + std::to_string(ordersLeft);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -221,17 +215,14 @@ void DriverVolunteer::step()
 } 
 
 string DriverVolunteer::toString() const {
-    string str1 = "None";
-    string str2 = "None";
-    if(activeOrderId != -1)
-        str1 = std::to_string(activeOrderId);
-    if(distanceLeft != 0)
-        str2 = std::to_string(distanceLeft);
+    string sActiveOrderId = (activeOrderId == -1) ? "None" : std::to_string(activeOrderId);
+    string sDistanceLeft = (getDistanceLeft() <= 0) ? "None" : std::to_string(getDistanceLeft());
+    string sIsbusy = (Volunteer::isBusy()) ? "True" : "False";
     return "VolunteerID: " + std::to_string(getId()) + "\n"
-     + ", isBusy:" + std::to_string(Volunteer::isBusy()) + "\n"
-     + ", OrderID: " + str1 + "\n"
-     + ", DistanceLeft: " + str2 + "\n"
-     + ", OrdersLeft: No Limit";
+         + "isBusy:" + sIsbusy + "\n"
+         + "OrderID: " + sActiveOrderId + "\n"
+         + "DistanceLeft: " + sDistanceLeft + "\n"
+         + "OrdersLeft: No Limit";
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,15 +264,12 @@ void LimitedDriverVolunteer::acceptOrder(const Order &order) {
 } // Assign distanceLeft to order's distance and decrease ordersLeft.
 string LimitedDriverVolunteer::toString() const 
 {
-    string str1 = "None";
-    string str2 = "None";
-    if(activeOrderId != -1)
-        str1 = std::to_string(activeOrderId);
-    if(getDistanceLeft() != 0)
-        str2 = std::to_string(getDistanceLeft());
+    string sActiveOrderId = (activeOrderId == -1) ? "None" : std::to_string(activeOrderId);
+    string sDistanceLeft = (getDistanceLeft() <= 0) ? "None" : std::to_string(getDistanceLeft());
+    string sIsbusy = (Volunteer::isBusy()) ? "True" : "False";
     return "VolunteerID: " + std::to_string(getId()) + "\n"
-     + ", isBusy:" + std::to_string(Volunteer::isBusy()) + "\n"
-     + ", OrderID: " + str1 + "\n"
-     + ", DistanceLeft: " + str2 + "\n"
-     + ", OrdersLeft: " + std::to_string(ordersLeft);
+         + "isBusy:" + sIsbusy + "\n"
+         + "OrderID: " + sActiveOrderId + "\n"
+         + "DistanceLeft: " + sDistanceLeft + "\n"
+         + "OrdersLeft: " + std::to_string(ordersLeft);
 }
