@@ -95,8 +95,10 @@ void PrintOrderStatus::act(WareHouse &wareHouse) {
         error("Order doesn't exist");
         std::cout << getErrorMsg() << std::endl;
     } 
-    else { std::cout << wareHouse.getOrder(orderId).toString() << std::endl;}
+    else { 
+    std::cout << wareHouse.getOrder(orderId).toString() << std::endl;
     complete();
+    }
 }
 
 

@@ -16,8 +16,8 @@ enum class CustomerType{
 };
 
 const std::unordered_map<std::string, CustomerType> StringToCustomerType = {
-    {"Soldier", CustomerType::Soldier},
-    {"Civilian", CustomerType::Civilian}
+    {"soldier", CustomerType::Soldier},
+    {"civilian", CustomerType::Civilian}
 };
 
 

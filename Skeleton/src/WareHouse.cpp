@@ -123,23 +123,6 @@ void WareHouse::start() {
     }
 }
 void WareHouse::step() {
-    // for (auto it = pendingOrders.begin(); it != pendingOrders.end();) {
-    //     for (Volunteer* volunteer : volunteers) {
-    //         if (volunteer->canTakeOrder(**it)) {
-    //             volunteer->acceptOrder(**it);
-    //             if ((**it).getStatus() == OrderStatus::PENDING) {
-    //                 (**it).setStatus(OrderStatus::COLLECTING);
-    //                 (**it).setCollectorId(volunteer->getId());
-    //             } else if ((**it).getStatus() == OrderStatus::COLLECTING) {
-    //                 (**it).setStatus(OrderStatus::DELIVERING);
-    //                 (**it).setDriverId(volunteer->getId());
-    //             }
-    //             inProcessOrders.push_back(*it);
-    //             pendingOrders.erase(it);
-    //             break;
-    //         }
-    //     }
-    // }
     auto it = pendingOrders.begin();
     while (it != pendingOrders.end()) {
         bool orderProcessed = false;
@@ -166,7 +149,7 @@ void WareHouse::step() {
     for (Volunteer* volunteer : volunteers){
         if (volunteer->isBusy()){
             volunteer->step();
-            if (volunteer->getActiveOrderId() == -1){
+            if (!volunteer->isBusy()){
                 Order& order = getOrder(volunteer->getCompletedOrderId());//orders not delete so no need to check exist
                 std::vector<Order*>::iterator it = std::find(inProcessOrders.begin(), inProcessOrders.end(), &order);
                 switch(order.getStatus()){
@@ -182,14 +165,14 @@ void WareHouse::step() {
                             completedOrders.push_back(&order);
                             inProcessOrders.erase(it);
                         }
-                        if (!volunteer->hasOrdersLeft()){
-                            deleteVolunteer(volunteer);
-                        }
                         break;
                     case OrderStatus::PENDING:
                         break;
                     case OrderStatus::COMPLETED:
                         break;
+                }
+                if (!volunteer->hasOrdersLeft()){
+                    deleteVolunteer(volunteer);
                 }
             }
         }
@@ -218,7 +201,7 @@ void WareHouse::addAction(BaseAction* action) {
 }
 
 
-bool WareHouse::deleteVolunteer(Volunteer* volunteer) {
+ bool WareHouse::deleteVolunteer(Volunteer* volunteer) {
     for (auto it = volunteers.begin(); it != volunteers.end(); ++it) {
         if (*it == volunteer) {
             delete *it;
@@ -228,6 +211,14 @@ bool WareHouse::deleteVolunteer(Volunteer* volunteer) {
     }
     return false;
 }
+// auto it = std::remove(volunteers.begin(), volunteers.end(), volunteer);
+//     if (it != volunteers.end()) {
+//         delete *it;
+//         volunteers.erase(it, volunteers.end());
+//         return true;
+//     }
+//     return false;
+// }
 
 //use before using getVolunteer
 //-1 if not exist, else return index
