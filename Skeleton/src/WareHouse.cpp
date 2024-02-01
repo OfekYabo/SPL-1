@@ -7,8 +7,9 @@
 #include <vector>
 #include <algorithm>
 
-WareHouse::WareHouse(const string &configFilePath) : isOpen(true), customerCounter(0), volunteerCounter(0), orderCounter(0),
-actionsLog(), volunteers(), pendingOrders(), inProcessOrders(), completedOrders(), customers(){
+WareHouse::WareHouse(const string &configFilePath) 
+: isOpen(true), actionsLog(), volunteers(), pendingOrders(), inProcessOrders(),
+completedOrders(), customers(), customerCounter(0), volunteerCounter(0), orderCounter(0){
     std::ifstream file(configFilePath);
     std::string line;
     while (std::getline(file, line)) 

@@ -26,7 +26,7 @@ class BaseAction{
         ActionStatus getStatus() const;
         //return the status by string
         string getStatusString() const;
-        virtual void act(WareHouse& wareHouse)=0;
+        virtual void act(WareHouse &wareHouse)=0;
         virtual string toString() const=0;
         virtual BaseAction* clone() const=0;
         virtual ~BaseAction()=default;
