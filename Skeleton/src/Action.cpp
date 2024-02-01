@@ -19,7 +19,7 @@ string BaseAction::getErrorMsg() const { return errorMsg;}
 // SimulateStep class
 SimulateStep::SimulateStep(int numOfSteps) : numOfSteps(numOfSteps) {}
 SimulateStep* SimulateStep::clone() const { return new SimulateStep(*this);}
-string SimulateStep::toString() const { return "step " + std::to_string(numOfSteps) + getStatusString();}
+string SimulateStep::toString() const { return "simulateStep " + std::to_string(numOfSteps) + getStatusString();}
 
 void SimulateStep::act(WareHouse &wareHouse) {
     for(int i = numOfSteps; i>0; i-- ){
@@ -150,24 +150,18 @@ void PrintVolunteerStatus::act(WareHouse &wareHouse) {
 
 
 
-
-
-
 // PrintActionsLog class
 PrintActionsLog::PrintActionsLog() {}
 PrintActionsLog* PrintActionsLog::clone() const { return new PrintActionsLog(*this);}
 string PrintActionsLog::toString() const { return "log" + getStatusString();}
 
 void PrintActionsLog::act(WareHouse &wareHouse) {
-    for (BaseAction* action : wareHouse.getActions()) {
-        std::cout << action->toString() << std::endl;
+    std::vector<BaseAction*> actions = wareHouse.getActions();
+    for (auto it = actions.begin(); it != actions.end() - 1; ++it) {
+        std::cout << (*it)->toString() << std::endl;
     }
     complete();
 }
-
-
-
-
 
 
 // Close class
@@ -179,9 +173,6 @@ void Close::act(WareHouse &wareHouse) {
     wareHouse.close();
     complete();
 }
-
-
-
 
 
 

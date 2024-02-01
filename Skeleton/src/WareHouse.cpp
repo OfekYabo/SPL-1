@@ -143,7 +143,7 @@ void WareHouse::step() {
     for (Volunteer* volunteer : volunteers){
         if (volunteer->isBusy()){
             volunteer->step();
-            if (volunteer->getActiveOrderId() -1){
+            if (volunteer->getActiveOrderId() == -1){
                 Order& order = getOrder(volunteer->getCompletedOrderId());//orders not delete so no need to check exist
                 std::vector<Order*>::iterator it = std::find(inProcessOrders.begin(), inProcessOrders.end(), &order);
                 switch(order.getStatus()){
@@ -279,18 +279,23 @@ int WareHouse::getVolunteerCounter() const {return volunteerCounter;}
 
 int WareHouse::getCustomerCounter() const {return customerCounter;}
 
+void printClose(const Order& order){
+    std::cout << "OrderID: " << std::to_string(order.getId()) 
+    << ", CustomerID: " << std::to_string(order.getCustomerId())
+    << ", OrderStatus: " << OrderStatusToString.at(order.getStatus()) << std::endl;
+}
 void WareHouse::close() {
     for (Order* order : pendingOrders) {
-        std::cout << order->toString() << std::endl;
+        printClose(*order);
     }
     for (Order* order : inProcessOrders) {
-        std::cout << order->toString() << std::endl;
+        printClose(*order);
     }
     for (Order* order : completedOrders) {
-        std::cout << order->toString() << std::endl;
+        printClose(*order);
     }
     isOpen = false;
-    }
+}
 
 void WareHouse::open() {isOpen = true;}
 

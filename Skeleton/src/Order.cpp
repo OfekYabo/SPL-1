@@ -46,11 +46,12 @@ OrderStatus Order::getStatus() const
 {
     return status;
 }
-const string Order::toString() const
-{
+const string Order::toString() const{
+    string sCollectorId = (collectorId == NO_VOLUNTEER) ? "None" : std::to_string(collectorId);
+    string sDriverId = (driverId == NO_VOLUNTEER) ? "None" : std::to_string(driverId);
     return  "OrderID: " + std::to_string(id) + "\n"
-        +  ", OrderStatus: " + OrderStatusToString.at(status) + "\n"
-        +  ", CustomerID: " + std::to_string(customerId) + "\n"
-        +  ", Collector: " + std::to_string(collectorId) + "\n"
-        +  ", Driver: " + std::to_string(driverId);
+         +  "OrderStatus: " + OrderStatusToString.at(status) + "\n"
+         +  "CustomerID: " + std::to_string(customerId) + "\n"
+         +  "Collector: " + sCollectorId + "\n"
+         +  "Driver: " + sDriverId;
 } 
