@@ -123,7 +123,26 @@ void WareHouse::start() {
     }
 }
 void WareHouse::step() {
-    for (auto it = pendingOrders.begin(); it != pendingOrders.end();) {
+    // for (auto it = pendingOrders.begin(); it != pendingOrders.end();) {
+    //     for (Volunteer* volunteer : volunteers) {
+    //         if (volunteer->canTakeOrder(**it)) {
+    //             volunteer->acceptOrder(**it);
+    //             if ((**it).getStatus() == OrderStatus::PENDING) {
+    //                 (**it).setStatus(OrderStatus::COLLECTING);
+    //                 (**it).setCollectorId(volunteer->getId());
+    //             } else if ((**it).getStatus() == OrderStatus::COLLECTING) {
+    //                 (**it).setStatus(OrderStatus::DELIVERING);
+    //                 (**it).setDriverId(volunteer->getId());
+    //             }
+    //             inProcessOrders.push_back(*it);
+    //             pendingOrders.erase(it);
+    //             break;
+    //         }
+    //     }
+    // }
+    auto it = pendingOrders.begin();
+    while (it != pendingOrders.end()) {
+        bool orderProcessed = false;
         for (Volunteer* volunteer : volunteers) {
             if (volunteer->canTakeOrder(**it)) {
                 volunteer->acceptOrder(**it);
@@ -135,9 +154,13 @@ void WareHouse::step() {
                     (**it).setDriverId(volunteer->getId());
                 }
                 inProcessOrders.push_back(*it);
-                pendingOrders.erase(it);
+                it = pendingOrders.erase(it); // Move iterator to the next valid position after erasing
+                orderProcessed = true;
                 break;
             }
+        }
+        if (!orderProcessed) {
+            ++it; // Move to the next order only if it was not processed
         }
     }
     for (Volunteer* volunteer : volunteers){
