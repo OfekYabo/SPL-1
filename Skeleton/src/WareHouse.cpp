@@ -7,6 +7,67 @@
 #include <vector>
 #include <algorithm>
 
+WareHouse::WareHouse(const string &configFilePath) : isOpen(true), customerCounter(0), volunteerCounter(0), orderCounter(0),
+actionsLog(), volunteers(), pendingOrders(), inProcessOrders(), completedOrders(), customers(){
+    std::ifstream file(configFilePath);
+    std::string line;
+    while (std::getline(file, line)) 
+    {
+        if (line[0] != '#' && !line.empty()) 
+        {
+            std::istringstream iss(line);
+            std::string type;
+            iss >> type;
+            if (type == "customer") 
+            {
+                std::string name, customerType;
+                int distance, maxOrders;
+                iss >> name >> customerType >> distance >> maxOrders;
+                if (customerType == "soldier") {
+                    Customer* soldier = new SoldierCustomer(customerCounter, name, distance, maxOrders);
+                    addCustomer(soldier);
+                } else if (customerType == "civilian") {
+                    Customer* civilian = new CivilianCustomer(customerCounter, name, distance, maxOrders);
+                    addCustomer(civilian);
+                }
+            } 
+            else if (type == "volunteer") 
+            {
+                std::string name, role;
+                int coolDown_maxDistance, maxOrders, distancePerStep;
+                iss >> name >> role >> coolDown_maxDistance;
+                if (role.find("driver") != std::string::npos)
+                {
+                    iss >> distancePerStep;
+                    if (role.find("limited") != std::string::npos)
+                    {
+                        iss >> maxOrders;
+                        Volunteer* driver = new LimitedDriverVolunteer(volunteerCounter, name, coolDown_maxDistance, distancePerStep, maxOrders);
+                        addVolunteer(driver);
+                    }
+                    else
+                    {
+                        Volunteer* driver = new DriverVolunteer(volunteerCounter, name, coolDown_maxDistance, distancePerStep);
+                        addVolunteer(driver);
+                    }
+                    
+                } else {
+                    if (role.find("limited") != std::string::npos)
+                    {
+                        iss >> maxOrders;
+                        Volunteer* collector = new LimitedCollectorVolunteer(volunteerCounter, name, coolDown_maxDistance, maxOrders);
+                        addVolunteer(collector);
+                    }
+                    else
+                    {
+                        Volunteer* collector = new CollectorVolunteer(volunteerCounter, name, coolDown_maxDistance);
+                        addVolunteer(collector);
+                    }
+                }
+            }
+        }
+    }
+}
 
 void WareHouse::start() {
     isOpen = true;
@@ -100,6 +161,10 @@ void WareHouse::step() {
                             deleteVolunteer(volunteer);
                         }
                         break;
+                    case OrderStatus::PENDING:
+                        break;
+                    case OrderStatus::COMPLETED:
+                        break;
                 }
             }
         }
@@ -107,66 +172,6 @@ void WareHouse::step() {
 }
 
 
-WareHouse::WareHouse(const string& configFilePath) : isOpen(true), customerCounter(0), volunteerCounter(0), orderCounter(0) {
-    std::ifstream file(configFilePath);
-    std::string line;
-    while (std::getline(file, line)) 
-    {
-        if (line[0] != '#' && !line.empty()) 
-        {
-            std::istringstream iss(line);
-            std::string type;
-            iss >> type;
-            if (type == "customer") 
-            {
-                std::string name, customerType;
-                int distance, maxOrders;
-                iss >> name >> customerType >> distance >> maxOrders;
-                if (customerType == "soldier") {
-                    Customer* soldier = new SoldierCustomer(customerCounter, name, distance, maxOrders);
-                    addCustomer(soldier);
-                } else if (customerType == "civilian") {
-                    Customer* civilian = new CivilianCustomer(customerCounter, name, distance, maxOrders);
-                    addCustomer(civilian);
-                }
-            } 
-            else if (type == "volunteer") 
-            {
-                std::string name, role;
-                int coolDown_maxDistance, maxOrders, distancePerStep;
-                iss >> name >> role >> coolDown_maxDistance;
-                if (role.find("driver") != std::string::npos)
-                {
-                    iss >> distancePerStep;
-                    if (role.find("limited") != std::string::npos)
-                    {
-                        iss >> maxOrders;
-                        Volunteer* driver = new LimitedDriverVolunteer(volunteerCounter, name, coolDown_maxDistance, distancePerStep, maxOrders);
-                        addVolunteer(driver);
-                    }
-                    else
-                    {
-                        Volunteer* driver = new DriverVolunteer(volunteerCounter, name, coolDown_maxDistance, distancePerStep);
-                        addVolunteer(driver);
-                    }
-                    
-                } else {
-                    if (role.find("limited") != std::string::npos)
-                    {
-                        iss >> maxOrders;
-                        Volunteer* collector = new LimitedCollectorVolunteer(volunteerCounter, name, coolDown_maxDistance, maxOrders);
-                        addVolunteer(collector);
-                    }
-                    else
-                    {
-                        Volunteer* collector = new CollectorVolunteer(volunteerCounter, name, coolDown_maxDistance);
-                        addVolunteer(collector);
-                    }
-                }
-            }
-        }
-    }
-}
 
 void WareHouse::addOrder(Order* order) {
     orderCounter++;
@@ -203,7 +208,7 @@ bool WareHouse::deleteVolunteer(Volunteer* volunteer) {
 //-1 if not exist, else return index
 int WareHouse::isVolunteerExist(int volunteerId) const {
     if(volunteerCounter<=volunteerId || volunteerId<0) {return -1;}
-    for (int i = 0; i < volunteers.size(); i++) {
+    for (std::vector<Volunteer*>::size_type i = 0; i < volunteers.size(); i++) {
         if (volunteers[i]->getId() == volunteerId) {
             return i;
         }
@@ -229,11 +234,13 @@ bool WareHouse::isCustomerExist(int customerId) const{
 
 //use isCustomerExist before using this function
 Customer& WareHouse::getCustomer(int customerId) const {
-    for (Customer* customer : customers) {
-        if (customer->getId() == customerId) {
-            return *customer;
-        }
-    }
+    // for (Customer* customer : customers) {
+    //     if (customer->getId() == customerId) {
+    //         return *customer;
+    //     }
+    // }
+    // throw std::invalid_argument("Customer doesn't exist");
+    return *customers[customerId];
 }
 
 //volunteer index, not ID (use isVolunteerExist to get index)
@@ -259,6 +266,7 @@ Order& WareHouse::getOrder(int orderId) const {
             return *order;
         }
     }
+    throw std::invalid_argument("Order doesn't exist");
 }
 
 const vector<BaseAction *>& WareHouse::getActions() const { return actionsLog; }
@@ -305,7 +313,8 @@ WareHouse::~WareHouse() {
 }
 
 WareHouse::WareHouse(const WareHouse& other) 
-    : isOpen(other.isOpen), customerCounter(other.customerCounter), volunteerCounter(other.volunteerCounter), orderCounter(other.orderCounter) {
+    : isOpen(other.isOpen), actionsLog(), volunteers(), pendingOrders(), inProcessOrders(), completedOrders(), customers(),
+    customerCounter(other.customerCounter), volunteerCounter(other.volunteerCounter), orderCounter(other.orderCounter){
         // Deep copy of pointers in vectors
         for (BaseAction* action : other.actionsLog) actionsLog.push_back(action->clone());
         for (Volunteer* volunteer : other.volunteers) volunteers.push_back(volunteer->clone());
@@ -337,10 +346,10 @@ WareHouse& WareHouse::operator=(const WareHouse& other) {
 }
 
 WareHouse::WareHouse(WareHouse&& other) noexcept 
-    : isOpen(other.isOpen), customerCounter(other.customerCounter), volunteerCounter(other.volunteerCounter),
-    orderCounter(other.orderCounter), actionsLog(std::move(other.actionsLog)), volunteers(std::move(other.volunteers)),
+    : isOpen(other.isOpen), actionsLog(std::move(other.actionsLog)), volunteers(std::move(other.volunteers)),
     pendingOrders(std::move(other.pendingOrders)), inProcessOrders(std::move(other.inProcessOrders)),
-    completedOrders(std::move(other.completedOrders)), customers(std::move(other.customers)) {
+    completedOrders(std::move(other.completedOrders)), customers(std::move(other.customers)),
+    customerCounter(other.customerCounter), volunteerCounter(other.volunteerCounter),orderCounter(other.orderCounter) {
         other.customerCounter = 0;
         other.volunteerCounter = 0;
         other.orderCounter = 0;
