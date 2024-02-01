@@ -279,7 +279,7 @@ int WareHouse::getVolunteerCounter() const {return volunteerCounter;}
 
 int WareHouse::getCustomerCounter() const {return customerCounter;}
 
-void printClose(const Order& order){
+void WareHouse::printClose(const Order& order){
     std::cout << "OrderID: " << std::to_string(order.getId()) 
     << ", CustomerID: " << std::to_string(order.getCustomerId())
     << ", OrderStatus: " << OrderStatusToString.at(order.getStatus()) << std::endl;
