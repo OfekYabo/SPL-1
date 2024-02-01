@@ -72,6 +72,7 @@ completedOrders(), customers(), customerCounter(0), volunteerCounter(0), orderCo
 
 void WareHouse::start() {
     isOpen = true;
+    std::cout << "WareHouse is open!" << std::endl;
     std::string line;
 
     while (isOpen && std::getline(std::cin, line)) {

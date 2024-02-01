@@ -9,7 +9,7 @@ string BaseAction::getStatusString() const {return status == ActionStatus::COMPL
 
 void BaseAction::complete() { status = ActionStatus::COMPLETED;}
 
-void BaseAction::error(string errorMsg) { status = ActionStatus::ERROR; this->errorMsg = errorMsg;}
+void BaseAction::error(string errorMsg) { status = ActionStatus::ERROR; this->errorMsg = "Error: " + errorMsg;}
 
 string BaseAction::getErrorMsg() const { return errorMsg;}
 
