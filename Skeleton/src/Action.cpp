@@ -22,7 +22,7 @@ SimulateStep::SimulateStep(int numOfSteps) : numOfSteps(numOfSteps) {}
 SimulateStep* SimulateStep::clone() const { return new SimulateStep(*this);}
 string SimulateStep::toString() const { return "step " + std::to_string(numOfSteps) + getStatusString();}
 
-void SimulateStep::act(WareHouse &wareHouse) {
+void SimulateStep::act(WareHouse& wareHouse) {
     for(int i = numOfSteps; i>0; i-- ){
         wareHouse.step();
     }
@@ -38,7 +38,7 @@ AddOrder::AddOrder(int id) : customerId(id) {}
 AddOrder* AddOrder::clone() const { return new AddOrder(*this);}
 string AddOrder::toString() const { return "order " + std::to_string(customerId) + getStatusString();}
 
-void AddOrder::act(WareHouse &wareHouse) {
+void AddOrder::act(WareHouse& wareHouse) {
     if (!wareHouse.isCustomerExist(customerId)){
         error("Cannot place this order");
         std::cout << getErrorMsg() << std::endl;
@@ -71,7 +71,7 @@ string AddCustomer::toString() const {
     return "customer " + customerName + " " + customerTypeString + " " + std::to_string(distance) + " " + std::to_string(maxOrders) + " " + getStatusString();
 }
 
-void AddCustomer::act(WareHouse &wareHouse) {
+void AddCustomer::act(WareHouse& wareHouse) {
     int customerId = wareHouse.getCustomerCounter();
     switch (customerType){
         case CustomerType::Civilian:
@@ -91,7 +91,7 @@ PrintOrderStatus::PrintOrderStatus(int id) : orderId(id) {}
 PrintOrderStatus* PrintOrderStatus::clone() const { return new PrintOrderStatus(*this);}
 string PrintOrderStatus::toString() const { return "orderStatus " + std::to_string(orderId) + getStatusString();}
 
-void PrintOrderStatus::act(WareHouse &wareHouse) {
+void PrintOrderStatus::act(WareHouse& wareHouse) {
     if (!wareHouse.isOrderExist(orderId)){
         error("Order doesn't exist");
         std::cout << getErrorMsg() << std::endl;
@@ -109,7 +109,7 @@ PrintCustomerStatus::PrintCustomerStatus(int customerId) : customerId(customerId
 PrintCustomerStatus* PrintCustomerStatus::clone() const { return new PrintCustomerStatus(*this);}
 string PrintCustomerStatus::toString() const { return "customerStatus " + std::to_string(customerId) + getStatusString();}
 
-void PrintCustomerStatus::act(WareHouse &wareHouse) {
+void PrintCustomerStatus::act(WareHouse& wareHouse) {
     if (!wareHouse.isCustomerExist(customerId)){
         error("Customer doesn't exist");
         std::cout << getErrorMsg() << std::endl;
@@ -136,7 +136,7 @@ PrintVolunteerStatus::PrintVolunteerStatus(int id) : volunteerId(id) {}
 PrintVolunteerStatus* PrintVolunteerStatus::clone() const { return new PrintVolunteerStatus(*this);}
 string PrintVolunteerStatus::toString() const { return "volunteerStatus " + std::to_string(volunteerId) + getStatusString();}
 
-void PrintVolunteerStatus::act(WareHouse &wareHouse) {
+void PrintVolunteerStatus::act(WareHouse& wareHouse) {
     int VolunteerIndex = wareHouse.isVolunteerExist(volunteerId);
     if ( VolunteerIndex == -1 ){
         error("Volunteer doesn't exist");
@@ -159,7 +159,7 @@ PrintActionsLog::PrintActionsLog() {}
 PrintActionsLog* PrintActionsLog::clone() const { return new PrintActionsLog(*this);}
 string PrintActionsLog::toString() const { return "log" + getStatusString();}
 
-void PrintActionsLog::act(WareHouse &wareHouse) {
+void PrintActionsLog::act(WareHouse& wareHouse) {
     for (BaseAction* action : wareHouse.getActions()) {
         std::cout << action->toString() << std::endl;
     }
@@ -176,7 +176,7 @@ Close::Close() {}
 Close* Close::clone() const { return new Close(*this);}
 string Close::toString() const { return "close" + getStatusString();}
 
-void Close::act(WareHouse &wareHouse) {
+void Close::act(WareHouse& wareHouse) {
     wareHouse.close();
     complete();
 }
@@ -191,7 +191,7 @@ BackupWareHouse::BackupWareHouse() {}
 BackupWareHouse* BackupWareHouse::clone() const { return new BackupWareHouse(*this);}
 string BackupWareHouse::toString() const { return "backup" + getStatusString();}
 
-void BackupWareHouse::act(WareHouse &wareHouse) {
+void BackupWareHouse::act(WareHouse& wareHouse) {
 extern WareHouse* backup;
 backup = new WareHouse(wareHouse);
 complete();
@@ -206,7 +206,7 @@ RestoreWareHouse::RestoreWareHouse() {}
 RestoreWareHouse* RestoreWareHouse::clone() const { return new RestoreWareHouse(*this);}
 string RestoreWareHouse::toString() const { return "restore" + getStatusString();}
 
-void RestoreWareHouse::act(WareHouse &wareHouse) {
+void RestoreWareHouse::act(WareHouse& wareHouse) {
     extern WareHouse* backup;    
     if (backup == nullptr) {
     error("No backup available");

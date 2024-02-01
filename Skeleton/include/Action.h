@@ -14,7 +14,6 @@ enum class CustomerType{
     Soldier, Civilian
 };
 
-
 const std::unordered_map<std::string, CustomerType> StringToCustomerType = {
     {"Soldier", CustomerType::Soldier},
     {"Civilian", CustomerType::Civilian}
@@ -24,7 +23,6 @@ const std::unordered_map<std::string, CustomerType> StringToCustomerType = {
 class BaseAction{
     public:
         BaseAction();
-        
         ActionStatus getStatus() const;
         //return the status by string
         string getStatusString() const;
