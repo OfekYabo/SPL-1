@@ -5,7 +5,9 @@
 using std::string;
 using std::vector;
 
+
 #define NO_ORDER -1
+
 
 class Volunteer {
     public:

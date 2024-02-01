@@ -5,7 +5,6 @@ using std::string;
 using std::vector;
 
 
-
 class Customer {
     public:
         Customer(int id, const string &name, int locationDistance, int maxOrders);

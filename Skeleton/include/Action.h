@@ -4,7 +4,8 @@
 using std::string;
 using std::vector;
 #include <unordered_map>
-#include "../include/WareHouse.h"
+class WareHouse;
+
 
 enum class ActionStatus{
     COMPLETED, ERROR
