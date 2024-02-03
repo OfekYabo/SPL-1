@@ -159,7 +159,7 @@ string PrintActionsLog::toString() const { return "log" + getStatusString();}
 
 void PrintActionsLog::act(WareHouse &wareHouse) {
     std::vector<BaseAction*> actions = wareHouse.getActions();
-    for (auto it = actions.begin(); it != actions.end() - 1; ++it) {
+    for (auto it = actions.begin(); it != actions.end(); ++it) {
         std::cout << (*it)->toString() << std::endl;
     }
     complete();

@@ -109,7 +109,8 @@ void WareHouse::start() {
             action = new PrintActionsLog();
         } else if (command == "close") {
             action = new Close();
-            isOpen = false; // Set isOpen to false when the "close" command is received
+            action->act(*this);
+            continue;//start the loop again
         } else if (command == "backup") {
             action = new BackupWareHouse();
         } else if (command == "restore") {
@@ -118,8 +119,8 @@ void WareHouse::start() {
             std::cout << "Illegal Input- Try Again"<< std::endl;
             continue;//start the loop again
         }
-        addAction(action);
         action->act(*this);
+        addAction(action);
     }
 }
 void WareHouse::step() {
