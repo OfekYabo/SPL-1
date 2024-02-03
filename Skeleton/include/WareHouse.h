@@ -54,4 +54,5 @@ class WareHouse {
         int orderCounter; //For assigning unique order IDs
         bool deleteVolunteer(Volunteer* volunteer);
         void printClose(const Order& order);
+        void freeResources();
 };

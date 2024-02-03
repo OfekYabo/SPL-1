@@ -317,8 +317,8 @@ void WareHouse::open() {isOpen = true;}
 //rule of five
 //
 
-WareHouse::~WareHouse() {
-    // Free all resources and clear vectors
+void WareHouse::freeResources(){
+// Free all resources and clear vectors
     for (auto action : actionsLog) delete action;
     actionsLog.clear();
     for (auto volunteer : volunteers) delete volunteer;
@@ -331,6 +331,10 @@ WareHouse::~WareHouse() {
     completedOrders.clear();
     for (auto customer : customers) delete customer;
     customers.clear();
+}
+
+WareHouse::~WareHouse() {
+    freeResources();
 }
 
 WareHouse::WareHouse(const WareHouse& other) 
@@ -348,7 +352,7 @@ WareHouse::WareHouse(const WareHouse& other)
 WareHouse& WareHouse::operator=(const WareHouse& other) {
     if (this != &other) {
         // Free current resources
-        this->~WareHouse();
+        freeResources();
         
         isOpen = other.isOpen;
         customerCounter = other.customerCounter;
@@ -379,7 +383,7 @@ WareHouse::WareHouse(WareHouse&& other) noexcept
 
 WareHouse& WareHouse::operator=(WareHouse&& other) noexcept {
     if (this!=&other) {
-        this->~WareHouse();
+        freeResources();
         isOpen = other.isOpen;
         customerCounter = other.customerCounter;
         volunteerCounter = other.volunteerCounter;
