@@ -24,6 +24,7 @@ class WareHouse {
         void addCustomer(Customer* customer);
         Customer &getCustomer(int customerId) const;
         Volunteer &getVolunteer(int volunteerId) const;
+        Volunteer &getVolunteerByIndex(int index) const;
         Order &getOrder(int orderId) const;
         bool isOrderExist(int orderId) const;
         bool isCustomerExist(int customerId) const;
