@@ -185,6 +185,7 @@ string BackupWareHouse::toString() const { return "backup" + getStatusString();}
 
 void BackupWareHouse::act(WareHouse &wareHouse) {
 extern WareHouse* backup;
+delete backup;
 backup = new WareHouse(wareHouse);
 complete();
 }
