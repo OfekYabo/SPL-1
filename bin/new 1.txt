@@ -1,3 +1,0 @@
-valgrind --leak-check=full -v ./bin/warehouse configFileExample.txt
-SPL-1/configFileExample.txt
-Status
