@@ -253,9 +253,6 @@ Volunteer& WareHouse::getVolunteer(int volunteerId) const {
 
 //use isVolunteerExist before using this function
 Volunteer& WareHouse::getVolunteerByIndex(int index) const {
-    if (index < 0 || index >= volunteers.size()) {
-        throw std::invalid_argument("Volunteer doesn't exist");
-    }
     return *volunteers[index];
 }
 
