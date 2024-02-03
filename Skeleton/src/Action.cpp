@@ -144,7 +144,7 @@ void PrintVolunteerStatus::act(WareHouse &wareHouse) {
         std::cout << getErrorMsg() << std::endl;
     }
     else{
-        Volunteer& volunteer = wareHouse.getVolunteer(VolunteerIndex);
+        Volunteer& volunteer = wareHouse.getVolunteerByIndex(VolunteerIndex);
         std::cout << volunteer.toString() << std::endl;
         complete();
     }

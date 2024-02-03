@@ -21,19 +21,20 @@ completedOrders(), customers(), customerCounter(0), volunteerCounter(0), orderCo
             iss >> type;
             if (type == "customer") 
             {
+                Customer* customer;
                 std::string name, customerType;
                 int distance, maxOrders;
                 iss >> name >> customerType >> distance >> maxOrders;
                 if (customerType == "soldier") {
-                    Customer* soldier = new SoldierCustomer(customerCounter, name, distance, maxOrders);
-                    addCustomer(soldier);
-                } else if (customerType == "civilian") {
-                    Customer* civilian = new CivilianCustomer(customerCounter, name, distance, maxOrders);
-                    addCustomer(civilian);
+                    customer = new SoldierCustomer(customerCounter, name, distance, maxOrders);
+                } else{
+                    customer = new CivilianCustomer(customerCounter, name, distance, maxOrders);
                 }
+                addCustomer(customer);
             } 
             else if (type == "volunteer") 
             {
+                Volunteer* volunteer;
                 std::string name, role;
                 int coolDown_maxDistance, maxOrders, distancePerStep;
                 iss >> name >> role >> coolDown_maxDistance;
@@ -43,28 +44,24 @@ completedOrders(), customers(), customerCounter(0), volunteerCounter(0), orderCo
                     if (role.find("limited") != std::string::npos)
                     {
                         iss >> maxOrders;
-                        Volunteer* driver = new LimitedDriverVolunteer(volunteerCounter, name, coolDown_maxDistance, distancePerStep, maxOrders);
-                        addVolunteer(driver);
+                        volunteer = new LimitedDriverVolunteer(volunteerCounter, name, coolDown_maxDistance, distancePerStep, maxOrders);
                     }
                     else
                     {
-                        Volunteer* driver = new DriverVolunteer(volunteerCounter, name, coolDown_maxDistance, distancePerStep);
-                        addVolunteer(driver);
+                        volunteer = new DriverVolunteer(volunteerCounter, name, coolDown_maxDistance, distancePerStep);
                     }
-                    
                 } else {
                     if (role.find("limited") != std::string::npos)
                     {
                         iss >> maxOrders;
-                        Volunteer* collector = new LimitedCollectorVolunteer(volunteerCounter, name, coolDown_maxDistance, maxOrders);
-                        addVolunteer(collector);
+                        volunteer = new LimitedCollectorVolunteer(volunteerCounter, name, coolDown_maxDistance, maxOrders);
                     }
                     else
                     {
-                        Volunteer* collector = new CollectorVolunteer(volunteerCounter, name, coolDown_maxDistance);
-                        addVolunteer(collector);
+                        volunteer = new CollectorVolunteer(volunteerCounter, name, coolDown_maxDistance);
                     }
                 }
+                addVolunteer(volunteer);
             }
         }
     }
@@ -212,16 +209,8 @@ void WareHouse::addAction(BaseAction* action) {
     }
     return false;
 }
-// auto it = std::remove(volunteers.begin(), volunteers.end(), volunteer);
-//     if (it != volunteers.end()) {
-//         delete *it;
-//         volunteers.erase(it, volunteers.end());
-//         return true;
-//     }
-//     return false;
-// }
 
-//use before using getVolunteer
+//use before using getVolunteerByIndex
 //-1 if not exist, else return index
 int WareHouse::isVolunteerExist(int volunteerId) const {
     if(volunteerCounter<=volunteerId || volunteerId<0) {return -1;}
@@ -251,19 +240,23 @@ bool WareHouse::isCustomerExist(int customerId) const{
 
 //use isCustomerExist before using this function
 Customer& WareHouse::getCustomer(int customerId) const {
-    // for (Customer* customer : customers) {
-    //     if (customer->getId() == customerId) {
-    //         return *customer;
-    //     }
-    // }
-    // throw std::invalid_argument("Customer doesn't exist");
     return *customers[customerId];
 }
 
-//volunteer index, not ID (use isVolunteerExist to get index)
-//indexes are from 0 or greater
 Volunteer& WareHouse::getVolunteer(int volunteerId) const {
-    return *volunteers[volunteerId];
+    int index = isVolunteerExist(volunteerId);
+    if (index == -1) {
+        throw std::invalid_argument("Volunteer doesn't exist");
+    }
+    return *volunteers[index];
+}
+
+//use isVolunteerExist before using this function
+Volunteer& WareHouse::getVolunteerByIndex(int index) const {
+    if (index < 0 || index >= volunteers.size()) {
+        throw std::invalid_argument("Volunteer doesn't exist");
+    }
+    return *volunteers[index];
 }
 
 //use isOrderExist before using this function
