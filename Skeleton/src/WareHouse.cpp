@@ -107,6 +107,7 @@ void WareHouse::start() {
         } else if (command == "close") {
             action = new Close();
             action->act(*this);
+            delete (action);
             continue;//start the loop again
         } else if (command == "backup") {
             action = new BackupWareHouse();
