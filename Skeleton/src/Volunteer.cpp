@@ -46,7 +46,7 @@ CollectorVolunteer* CollectorVolunteer::clone() const
 {
      return new CollectorVolunteer(*this);
 }
-void CollectorVolunteer::step() // need to check if it's correct
+void CollectorVolunteer::step() 
 {
     if(decreaseCoolDown())
     {

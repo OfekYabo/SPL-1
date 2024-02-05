@@ -7,6 +7,7 @@
 #include <vector>
 #include <algorithm>
 
+// The constructor basically runs through the config files and adds volunteers and customers to their vectors according to it.
 WareHouse::WareHouse(const string &configFilePath) 
 : isOpen(true), actionsLog(), volunteers(), pendingOrders(), inProcessOrders(),
 completedOrders(), customers(), customerCounter(0), volunteerCounter(0), orderCounter(0){
@@ -14,12 +15,12 @@ completedOrders(), customers(), customerCounter(0), volunteerCounter(0), orderCo
     std::string line;
     while (std::getline(file, line)) 
     {
-        if (line[0] != '#' && !line.empty()) 
+        if (line[0] != '#' && !line.empty()) // because every line in the config file starts either with '#', empty or warehouse info
         {
             std::istringstream iss(line);
             std::string type;
-            iss >> type;
-            if (type == "customer") 
+            iss >> type; // ?
+            if (type == "customer") // adding customer
             {
                 Customer* customer;
                 std::string name, customerType;
@@ -32,7 +33,7 @@ completedOrders(), customers(), customerCounter(0), volunteerCounter(0), orderCo
                 }
                 addCustomer(customer);
             } 
-            else if (type == "volunteer") 
+            else if (type == "volunteer") // adding volunteer (driver/limited)
             {
                 Volunteer* volunteer;
                 std::string name, role;
@@ -61,12 +62,13 @@ completedOrders(), customers(), customerCounter(0), volunteerCounter(0), orderCo
                         volunteer = new CollectorVolunteer(volunteerCounter, name, coolDown_maxDistance);
                     }
                 }
-                addVolunteer(volunteer);
+                addVolunteer(volunteer); 
             }
         }
     }
 }
 
+// The start() function takes the input the user would like to make in the warehouse, afterwards, the appropriate Action is built and launched.
 void WareHouse::start() {
     isOpen = true;
     std::cout << "WareHouse is open!" << std::endl;
@@ -74,7 +76,7 @@ void WareHouse::start() {
 
     while (isOpen && std::getline(std::cin, line)) {
         std::istringstream iss(line);
-        std::string command;
+        std::string command; // the input from the user
         iss >> command;
         BaseAction* action;
         if (command == "step") {
@@ -121,8 +123,11 @@ void WareHouse::start() {
         addAction(action);
     }
 }
+
+// The
 void WareHouse::step() {
-    auto it = pendingOrders.begin();
+    auto it = pendingOrders.begin();  // Iterator pointing to the first element in the vector 'pendingOrders', **it => wraps out to the order that he's pointing to.
+    // This loop takes the pending orders and processing them among the volunteers (collectors/drivers) and changes their status accordingly to PENDING/COLLECTING/DELIVERING.
     while (it != pendingOrders.end()) {
         bool orderProcessed = false;
         for (Volunteer* volunteer : volunteers) {
@@ -135,7 +140,7 @@ void WareHouse::step() {
                     (**it).setStatus(OrderStatus::DELIVERING);
                     (**it).setDriverId(volunteer->getId());
                 }
-                inProcessOrders.push_back(*it);
+                inProcessOrders.push_back(*it); // pushes the order to 'inProcessOrders' vector
                 it = pendingOrders.erase(it); // Move iterator to the next valid position after erasing
                 orderProcessed = true;
                 break;
@@ -145,11 +150,13 @@ void WareHouse::step() {
             ++it; // Move to the next order only if it was not processed
         }
     }
+
+    //This loop takes the processed orders and changes their status accordingly from COLLECTED to COMPLETED and puts the processed order to the vector 'pendingOrders' after it has been collected.
     for (Volunteer* volunteer : volunteers){
         if (volunteer->isBusy()){
             volunteer->step();
             if (!volunteer->isBusy()){
-                Order& order = getOrder(volunteer->getCompletedOrderId());//orders not delete so no need to check exist
+                Order& order = getOrder(volunteer->getCompletedOrderId()); //orders do not delete so no need to check exist
                 std::vector<Order*>::iterator it = std::find(inProcessOrders.begin(), inProcessOrders.end(), &order);
                 switch(order.getStatus()){
                     case OrderStatus::COLLECTING:
@@ -325,6 +332,7 @@ void WareHouse::freeResources(){
     customers.clear();
 }
 
+// warehouse destructor
 WareHouse::~WareHouse() {
     freeResources();
 }
